@@ -50,26 +50,28 @@ Package.on_use(function(api) {
     ],
   'client');
 
-  api.add_files(['lib/collections.coffee',
-                 'lib/shared.coffee',
-                 'lib/menu.coffee'],
+  api.add_files(['lib/collections.js',
+                 'lib/shared.js',
+                 'lib/menu.js'],
                 ['client', 'server']);
 
   api.add_files([
     // shared
-    'client/lib/shared.coffee',
+    'client/lib/shared.js',
     // shared partials
-    'client/partials/admin_nav.coffee',
-    'client/partials/flash_message.coffee',
-    'client/partials/custom_actions.coffee',
+    'client/partials/admin_nav.js',
+    'client/partials/flash_message.js',
+    'client/partials/custom_actions.js',
     // view logic
-    'client/custom_template_view.coffee', 'client/admin_login.coffee',
-    'client/collection_view.coffee', 'client/document_view.coffee',
-    'client/admin_change_password.coffee', 'client/db_view.coffee',
+    'client/custom_template_view.js', 'client/admin_login.js',
+    'client/collection_view.js', 'client/document_view.js',
+    'client/admin_change_password.js', 'client/db_view.js',
     // router
-    'client/router.coffee'
+    'client/router.js'
     ],
   'client');
 
-  api.add_files(['server/publications.coffee', 'server/exports.coffee', 'server/methods.coffee'], 'server');
+  api.add_files(['server/publications.js', 'server/exports.js', 'server/methods.js'], 'server');
 });
+
+// TODO: remove old .coffee files
