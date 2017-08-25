@@ -7,7 +7,6 @@ Houston.methods = function(collection, raw_methods) {
 
   const methods = {};
   _.each(raw_methods, (func, func_name) => {
-    const func = raw_methods[func_name];
     methods[Houston._custom_method_name(collection_name, func_name)] = require_admin(func);
   });
 
