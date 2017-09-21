@@ -8,7 +8,9 @@
  * DS208: Avoid top-level this
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-const root = typeof exports !== 'undefined' && exports !== null ? exports : this;
+// const root = typeof exports !== 'undefined' && exports !== null ? exports : this;
+import Houston from '../imports/houston';
+
 Houston._HIDDEN_COLLECTIONS = {'users': Meteor.users, 'meteor_accounts_loginServiceConfiguration': undefined};
 const ADDED_COLLECTIONS = {};
 // TODO: describe what this is, exactly, and how it differs from Houston._collections.

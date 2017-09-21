@@ -6,7 +6,8 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 // Functions that Houston makes available to the app
-const root = typeof exports !== 'undefined' && exports !== null ? exports : this;
+// const root = typeof exports !== 'undefined' && exports !== null ? exports : this;
+import Houston from '../imports/houston';
 
 // Let Houston know about a collection manually, as an alternative
 // to the current autodiscovery process

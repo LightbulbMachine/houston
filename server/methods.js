@@ -1,3 +1,5 @@
+import Houston from '../imports/houston';
+
 const require_admin = func => function() { if (Houston._user_is_admin(this.userId)) { return func.apply(this, arguments); } };
 
 Houston.methods = function(collection, raw_methods) {

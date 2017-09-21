@@ -1,3 +1,5 @@
+import Houston from '../../imports/houston';
+
 Houston._show_flash = function(err, result) {
   Houston._session('flash_error', (err != null));
   if (err) {

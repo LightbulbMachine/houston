@@ -1,3 +1,6 @@
+import { Session } from 'meteor/session';
+import Houston from '../../imports/houston';
+
 Houston._admin_user_exists = () => Houston._admins.find().count() > 0;
 
 Houston.becomeAdmin = () =>
@@ -78,3 +81,5 @@ Houston._get_type = function(field, collection) {
   const sample_val = Houston._nested_field_lookup(collection.findOne(find_obj), field);
   return typeof sample_val;
 };
+
+export default Houston;

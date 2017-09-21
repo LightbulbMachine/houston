@@ -274,6 +274,7 @@ Template._houston_collection_view.events({
 
       field.value = '';
     });
+    console.log("new_doc", new_doc);
     return Houston._call(`${this.name}_insert`, new_doc);
   },
 
