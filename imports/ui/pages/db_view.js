@@ -1,19 +1,29 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
-import Houston from '../../../client/lib/shared';
 
 class houston_db_view extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      filter: '',
+    };
+
     this.filterCollections = this.filterCollections.bind(this);
     this.renderWarning = this.renderWarning.bind(this);
     this.renderCollections = this.renderCollections.bind(this);
+    this.setFilter = this.setFilter.bind(this);
   }
 
-  filterCollections(query, collections) {
-    if (query) {
-      return _.filter(collections, c => (c.name).indexOf(query) > -1);
+  setFilter(e) {
+    const filter = e.target.value;
+    this.setState({ filter });
+  }
+
+  filterCollections(filter, collections) {
+    if (filter) {
+      return _.filter(collections, c => (c.name).indexOf(filter) > -1);
     } else {
       return collections;
     }
@@ -31,8 +41,9 @@ class houston_db_view extends Component {
   }
 
   renderCollections() {
+    const { filter } = this.state;
     const { collections } = this.props;
-    const filteredCollections = this.filterCollections(Houston._session('search'), collections);
+    const filteredCollections = this.filterCollections(filter, collections);
     
     return filteredCollections.map( col =>
       <a key={col._id} href={'#'/*{pathFor 'houston_collection' collection_name=name}*/}>
@@ -57,6 +68,7 @@ class houston_db_view extends Component {
 
         <input name="name" id="search" placeholder="Search"
                className="form-control houston-column-filter input-lg"
+               onKeyUp={this.setFilter}
                type="text" autoFocus/>
         {this.renderWarning()}
         {this.renderCollections()}
