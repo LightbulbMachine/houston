@@ -26,7 +26,6 @@ class houston_sidenav extends Component {
   renderCollections() {
     const { collections } = this.props;
     // const collections = this.collections();
-    console.log("collections", collections);
     return collections.map( col =>
       <li key={col._id} className={this.is_active(col.name)}>
         <a href={'#'/*{pathFor 'houston_collection' collection_name=name }*/}>
@@ -37,9 +36,7 @@ class houston_sidenav extends Component {
   }
 
   render() {
-    console.log(this.props);
     const { loading, collections } = this.props;
-    console.log("loading", loading);
     
     return loading ? <div>Loading</div> : (
       <div>
@@ -62,9 +59,7 @@ class houston_sidenav extends Component {
 const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
   const subs = waitOn();
   const payloadData = data();
-  console.log("payloadData", payloadData);
   const { collections } = payloadData;
-  console.log("collections", collections);
 
   let loading = true;
   let stillLoading = true;
