@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
+import HoustonLink from '../partials/link';
+import Houston from '../../../client/lib/shared';
 
 class houston_db_view extends Component {
   constructor(props) {
@@ -42,18 +44,18 @@ class houston_db_view extends Component {
 
   renderCollections() {
     const { filter } = this.state;
-    const { collections } = this.props;
+    const { collections, history } = this.props;
     const filteredCollections = this.filterCollections(filter, collections);
     
     return filteredCollections.map( col =>
-      <a key={col._id} href={'#'/*{pathFor 'houston_collection' collection_name=name}*/}>
+      <HoustonLink href={`${Houston._ROOT_ROUTE}/${col.name}`} history={history} key={col._id}>
         <div className="col-sm-6 col-md-4 col-lg-3">
           <h4 className="well well-sm houston-collection">
             <i className="fa fa-database"></i>{col.name}
             <span className="badge pull-right">{col.count}</span>
           </h4>
         </div>
-      </a> );
+      </HoustonLink> );
   }
 
   render() {
@@ -79,8 +81,7 @@ class houston_db_view extends Component {
 
 const houston_db_view_with_data = createContainer(({ waitOn, data }) => {
   const subs = waitOn();
-  const payloadData = data();
-  const { collections } = payloadData;
+  const { collections } = Houston._collections;
 
   let loading = true;
   let stillLoading = true;

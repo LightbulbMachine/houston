@@ -9,6 +9,7 @@ import houston_sidenav from '../partials/sidenav';
 import houston_flash_message from '../partials/flash_message';
 
 import houston_db_view from '../pages/db_view';
+import houston_collection_view from '../pages/collection_view';
 
 // TODO: We should definitely remove this workaround in future versions
 const componentsList = {
@@ -19,6 +20,7 @@ const componentsList = {
   houston_sidenav,
   houston_flash_message,
   houston_db_view,
+  houston_collection_view,
 };
 
 

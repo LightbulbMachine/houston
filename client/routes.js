@@ -13,6 +13,10 @@ Houston._page_length = publicSettings.houston_documents_per_page || DEFAULTS._pa
 Houston._subscribe = name => Meteor.subscribe(Houston._houstonize(name));
 Houston._houstonize_route = name => Houston._houstonize(name).slice(1);
 Houston._go = (route_name, options) => Router.go(Houston._houstonize_route(route_name), options);
+Houston.createPath = (path) => {
+  const newPath = `${Houston._ROOT_ROUTE}/${path}`;
+  return newPath;
+};
 
 Houston._show_flash = function(err, result) {
   Houston._session('flash_error', (err != null));
@@ -40,6 +44,7 @@ class AdminRoutes extends Component {
 
   houston_route(route_name, options) {
     // Append _houston_ to template and route names to avoid clobbering parent route namespace
+    options.history = this.props.history;
     options.layoutTemplate = '_houston_master_layout';
     options.name = Houston._houstonize_route(route_name);
     options.componentName = Houston._houstonize_route(options.template);
@@ -68,18 +73,23 @@ class AdminRoutes extends Component {
           <Switch>
             {
               this.houston_route('home', {
-                history,
                 houston_path: '/',
                 template: 'db_view',
-                data() { return {collections: Houston._collections.collections}; },
                 waitOn() { return Houston._collections; }
               })
             }
             {
               this.houston_route('login', {
-                history,
-                houston_path: "/login",
+                houston_path: '/login',
                 template: 'login',
+              })
+            }
+            {
+              this.houston_route('collection', {
+                houston_path: '/:collection_name',
+                template: 'collection_view',
+                // data() { return Houston._get_collection(this.params.collection_name); },
+                // subs(params) { return [setup_collection(params.collection_name)]; },
               })
             }
           </Switch>

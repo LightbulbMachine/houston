@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
+import HoustonLink from './link';
 import Houston from '../../../client/lib/shared';
 
 class houston_sidenav extends Component {
@@ -9,29 +10,19 @@ class houston_sidenav extends Component {
     this.renderCollections = this.renderCollections.bind(this);
   }
 
-  handleClick(path) {
-    const { history } = this.props;
-    history.push(path);
-    return true;
-  }
-  
-  // collections() {
-  //   return Houston._collections.collections.find().fetch();
-  // }
-
   is_active(name) {
     return name === Houston._session('collection_name') ? 'active' : '';
   }
 
   renderCollections() {
-    const { collections } = this.props;
-    // const collections = this.collections();
+    const { collections, history } = this.props;
+
     return collections.map( col =>
       <li key={col._id} className={this.is_active(col.name)}>
-        <a href={'#'/*{pathFor 'houston_collection' collection_name=name }*/}>
+        <HoustonLink href={`${Houston._ROOT_ROUTE}/${col.name}`} history={history}>
           {col.name}
           <span className="badge pull-right">{col.count}</span>
-        </a>
+        </HoustonLink>
       </li> );
   }
 
@@ -58,8 +49,7 @@ class houston_sidenav extends Component {
 
 const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
   const subs = waitOn();
-  const payloadData = data();
-  const { collections } = payloadData;
+  const { collections } = Houston._collections;
 
   let loading = true;
   let stillLoading = true;
