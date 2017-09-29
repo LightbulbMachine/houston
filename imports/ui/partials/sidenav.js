@@ -27,7 +27,7 @@ class houston_sidenav extends Component {
   }
 
   render() {
-    const { loading, collections } = this.props;
+    const { loading, collections, history } = this.props;
     
     return loading ? <div>Loading</div> : (
       <div>
@@ -40,7 +40,7 @@ class houston_sidenav extends Component {
         <hr />
 
         <ul className="nav nav-sidebar">
-          <li><a href="#"onClick={ () => this.handleClick('/') }><i className="fa fa-reply"></i>Back to Root</a></li>
+          <li><HoustonLink href="/" history={history}><i className="fa fa-reply"></i>Back to Root</HoustonLink></li>
         </ul>
       </div>
     );

@@ -1,6 +1,43 @@
 import React, { Component } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
+import { withRouter } from 'react-router-dom';
 
-export default class houston_navbar extends Component {
+class houston_navbar extends Component {
+  constructor(props) {
+    super(props);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.renderPasswordLink = this.renderPasswordLink.bind(this);
+    this.renderLogoutLink = this.renderLogoutLink.bind(this);
+  }
+
+  handleLogout(e) {
+    e.preventDefault();
+    const { history } = this.props;
+    Meteor.logout();
+    // going 'home' clears the side nav
+    history.push(Houston._ROOT_ROUTE);
+  }
+
+  renderPasswordLink() {
+    const { currentUser } = this.props;
+    return currentUser &&
+      <li>
+        <a href="{{pathFor 'houston_change_password'}}"><i
+            className="fa fa-pencil"></i>Change password</a>
+      </li>;
+
+  }
+
+  renderLogoutLink() {
+    const { currentUser } = this.props;
+    return currentUser &&
+      <li>
+        <a id="houston-logout" href="#" onClick={this.handleLogout}>Log out&nbsp;<i
+            className="fa fa-sign-out"></i></a>
+      </li>;
+
+  }
+
   render() {
     return (
       <div className="navbar navbar-inverse navbar-fixed-top">
@@ -32,16 +69,8 @@ export default class houston_navbar extends Component {
                   <i className="fa fa-bug"></i>Report a Bug
                 </a>
               </li>
-              {/*{#if currentUser}}
-                <li>
-                  <a href="{{pathFor 'houston_change_password'}}"><i
-                      className="fa fa-pencil"></i>Change password</a>
-                </li>
-                <li>
-                  <a id="houston-logout" href="#">Log out&nbsp;<i
-                      className="fa fa-sign-out"></i></a>
-                </li>
-              {{/if}*/}
+              {this.renderPasswordLink()}
+              {this.renderLogoutLink()}
             </ul>
           </div>
           {/*<!--/.nav-collapse -->*/}
@@ -51,3 +80,13 @@ export default class houston_navbar extends Component {
     );
   }
 }
+
+const houston_navbar_with_data = createContainer((props) => {
+  return {
+    currentUser: Meteor.user(),
+  };
+
+}, houston_navbar);
+
+export default withRouter(houston_navbar_with_data);
+

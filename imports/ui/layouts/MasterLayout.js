@@ -8,6 +8,7 @@ import houston_navbar from '../partials/navbar';
 import houston_sidenav from '../partials/sidenav';
 import houston_flash_message from '../partials/flash_message';
 
+import houston_login from '../pages/admin_login';
 import houston_db_view from '../pages/db_view';
 import houston_collection_view from '../pages/collection_view';
 
@@ -19,6 +20,7 @@ const componentsList = {
   houston_navbar,
   houston_sidenav,
   houston_flash_message,
+  houston_login,
   houston_db_view,
   houston_collection_view,
 };

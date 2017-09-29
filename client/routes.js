@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
 import { render } from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Houston from './lib/shared';
@@ -29,10 +30,17 @@ Houston._show_flash = function(err, result) {
   setTimeout((() => Houston._session('flash_show', false)), 2000);
 };
 
+BASE_HOUSTON_ROUTES = _.map([
+  'home',
+  'collection',
+  'document',
+  'change_password',
+  'custom_template'
+], name => Houston._houstonize_route(name));
 
 Houston._subscribe_to_collections();
 
-class AdminRoutes extends Component {
+class Routes extends Component {
   constructor(props) {
     super(props);
     this.houston_route = this.houston_route.bind(this);
@@ -43,6 +51,7 @@ class AdminRoutes extends Component {
   }
 
   houston_route(route_name, options) {
+    const { loggedIn, loggingIn, userIsAdmin, rolesReady } = this.props;
     // Append _houston_ to template and route names to avoid clobbering parent route namespace
     options.history = this.props.history;
     options.layoutTemplate = '_houston_master_layout';
@@ -58,7 +67,23 @@ class AdminRoutes extends Component {
     return <Route
         exact path={`${Houston._ROOT_ROUTE}${options.houston_path}`}
         {...options}
-        render={ props => this.renderTemplate(options) }
+        render={props => {
+          if (_.contains(BASE_HOUSTON_ROUTES, options.name)) {
+            if (! loggedIn) {
+              if (loggingIn) {
+                return <div>Loading...</div>;
+                // return this.render('houstonLoading');
+              } else {
+                return <Redirect to={`${Houston._ROOT_ROUTE}/login`}/>
+              }
+            } else {
+              if (rolesReady && ! userIsAdmin) {
+                return <Redirect to={`${Houston._ROOT_ROUTE}/login`}/>
+              } 
+            }
+          }
+          return this.renderTemplate(options);
+        }}
       />
   }
 
@@ -98,6 +123,16 @@ class AdminRoutes extends Component {
     );
   }
 }
+
+const AdminRoutes = createContainer((props) => {
+  return {
+    loggedIn: Meteor.user(),
+    loggingIn: Meteor.loggingIn(),
+    rolesReady: Houston._subscribe('roles').ready(),
+    userIsAdmin: Houston._user_is_admin(Meteor.userId()),
+  };
+
+}, Routes);
 
 export { Houston, AdminRoutes };
 

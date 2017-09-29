@@ -11,8 +11,6 @@ export default class HoustonLink extends Component {
     const { href } = e.currentTarget;
     const path = href.replace(/^.*\/\/[^\/]+/, '');
     const { history } = this.props;
-    console.log("this.props", this.props);
-    console.log("history", history);
     history.push(path);
   }
 

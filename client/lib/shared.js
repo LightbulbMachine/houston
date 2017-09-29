@@ -3,11 +3,12 @@ import Houston from '../../imports/houston';
 
 Houston._admin_user_exists = () => Houston._admins.find().count() > 0;
 
-Houston.becomeAdmin = () =>
-  Houston._call('make_admin', Meteor.userId(), function() {
+Houston.becomeAdmin = (cb) =>
+  Houston._call('make_admin', Meteor.userId(), () => {
     Houston._subscribe_to_collections(); // resubscribe so you get them
-    Houston._go('home');
-    location.reload();
+    cb();
+    // Houston._go('home');
+    // location.reload();
   })
 ;
 
