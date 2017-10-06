@@ -11,6 +11,7 @@ import houston_flash_message from '../partials/flash_message';
 import houston_login from '../pages/admin_login';
 import houston_db_view from '../pages/db_view';
 import houston_collection_view from '../pages/collection_view';
+import houston_document_view from '../pages/document_view';
 
 // TODO: We should definitely remove this workaround in future versions
 const componentsList = {
@@ -23,6 +24,7 @@ const componentsList = {
   houston_login,
   houston_db_view,
   houston_collection_view,
+  houston_document_view,
 };
 
 

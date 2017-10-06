@@ -117,6 +117,18 @@ class Routes extends Component {
                 // subs(params) { return [setup_collection(params.collection_name)]; },
               })
             }
+            {
+              this.houston_route('document', {
+                houston_path: '/:collection/:_id',
+                // data() {
+                //   this.subscription = setup_collection(this.params.collection, this.params._id);
+                //   const collection = Houston._get_collection(this.params.collection);
+                //   const document = collection.findOne({_id: this.params._id});
+                //   return {document, collection, name: this.params.collection};
+                // },
+                template: 'document_view'
+              })
+            }
           </Switch>
         </div>
       </Router>
