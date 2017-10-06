@@ -70,10 +70,16 @@ Houston._setup_collection = function(collection) {
 const sync_collections = function() {
   // Houston._admins.findOne(); // TODO Why is this here?
   const collections = {};
-  const mongoCollections = Mongo.Collection.getAll() || [];
+  // This does not get all collections:
+  // const mongoCollections = Mongo.Collection.getAll() || [];
+  const mongoCollections = MongoInternals.defaultRemoteCollectionDriver().mongo.db.collections(bound_sync_collections).await();
 
   _.each(mongoCollections, function(collection){
-    collections[collection.name] = collection.instance;
+    let instance = Mongo.Collection.get(collection.s.name);
+    if (!instance) {
+      instance = new Mongo.Collection(collection.s.name);
+    }
+    collections[collection.s.name] = instance;
   });
 
   const _sync_collections = function(meh, collections_db) {
