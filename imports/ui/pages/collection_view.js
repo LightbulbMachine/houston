@@ -9,6 +9,7 @@ class houston_collection_view extends Component {
   constructor(props) {
     super(props);
     this.num_of_records = this.num_of_records.bind(this);
+    this.handleSort = this.handleSort.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleDeleteAll = this.handleDeleteAll.bind(this);
   }
@@ -33,6 +34,20 @@ class houston_collection_view extends Component {
   nonid_headers() {
     const headers = this.headers();
     return headers && headers.slice(1);
+  }
+
+  handleSort(e) {
+    e.preventDefault();
+    const { name, resubscribe, rows } = this.props;
+    const sort_key = e.currentTarget.dataset.name;
+    if (Houston._session('sort_key') === sort_key) {
+      Houston._session('sort_order', Houston._session('sort_order') * - 1);
+    } else {
+      Houston._session('sort_key', sort_key);
+      Houston._session('sort_order', 1);
+    }
+
+    resubscribe(name, get_sort_by(), get_filter_query(Houston._get_collection(name)));
   }
 
   handleDelete(e) {
@@ -77,7 +92,7 @@ class houston_collection_view extends Component {
     const headers = this.headers();
 
     return headers && headers.map( header =>
-      <th key={header.name}><a href="#" className="houston-sort">{header.name}</a></th> );
+      <th key={header.name}><a href="#" className="houston-sort" onClick={this.handleSort} data-name={header.name}>{header.name}</a></th> );
   }
 
   renderValues(row) {
@@ -90,8 +105,7 @@ class houston_collection_view extends Component {
   }
 
   renderRows() {
-    const { name, history } = this.props;
-    const rows = this.props.rows();
+    const { name, history, rows } = this.props;
     const sort_order = Houston._session('sort_order');
 
     return rows && rows.map( row =>
@@ -303,12 +317,23 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
     }
   };
 
+  const resubscribe = function(name, sort_by, filter_query) {
+    // Stop the old subscription and resubscribe with the new filter/sort
+    const subscription_name = Houston._houstonize(name);
+    Houston._paginated_subscription.stop();
+    return Houston._paginated_subscription =
+      Meteor.subscribeWithPagination(subscription_name,
+        sort_by, filter_query,
+        Houston._page_length);
+  };
+
   return {
     collection,
     collection_info,
     collection_count,
-    rows,
+    rows: rows(),
     values_in_order,
+    resubscribe,
     name: collection_name,
   };
 
