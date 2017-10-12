@@ -9,6 +9,8 @@ class houston_collection_view extends Component {
   constructor(props) {
     super(props);
     this.num_of_records = this.num_of_records.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleDeleteAll = this.handleDeleteAll.bind(this);
   }
 
   num_of_records() {
@@ -31,6 +33,23 @@ class houston_collection_view extends Component {
   nonid_headers() {
     const headers = this.headers();
     return headers && headers.slice(1);
+  }
+
+  handleDelete(e) {
+    e.preventDefault();
+    const { name } = this.props;
+    const id = e.currentTarget.dataset.id;
+    if (confirm(`Are you sure you want to delete the document with _id ${id}?`)) {
+      return Houston._call(`${name}_delete`, id);
+    }
+  }
+
+  handleDeleteAll(e) {
+    e.preventDefault();
+    const { name } = this.props;
+    if (confirm(`Are you sure you want to delete all the ${name}?`)) {
+      return Houston._call(`${name}_deleteAll`);
+    }
   }
 
   renderNewDocumentFields() {
@@ -83,8 +102,9 @@ class houston_collection_view extends Component {
         <td className="action-cell" >
           {/*{> _houston_custom_actions collection_info=collection_info document=this size="xs" }*/}
           <div data-id={row._id}
-               className="btn btn-xs houston-delete-doc btn-danger">
-            <i className="fa fa-trash-o"></i>Delete {sort_order}
+               className="btn btn-xs houston-delete-doc btn-danger"
+               onClick={this.handleDelete}>
+            <i className="fa fa-trash-o"></i>Delete
           </div>
         </td>
       </tr> );
@@ -124,7 +144,7 @@ class houston_collection_view extends Component {
           <div className="col-md-12">
             <div className="page-header">
               <div id="collection-page-header-actions" className="pull-right">
-                <button data-name={name} className="btn btn-sm houston-delete-all btn-danger">
+                <button data-name={name} className="btn btn-sm houston-delete-all btn-danger" onClick={this.handleDeleteAll}>
                   <i className="fa fa-trash-o"></i>
                   Delete all
                 </button>
