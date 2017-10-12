@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import { setup_collection } from '../../util/subs';
+import { objectifyDocumentId } from '../../util/documentId';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
 
@@ -109,7 +110,7 @@ const houston_document_view_with_data = createContainer(({ match }) => {
   const sub = setup_collection(name, document_id);
   const loading = ! sub.ready();
   const collection = Houston._get_collection(name);
-  const doc = collection.findOne({ _id: document_id });
+  const doc = collection.findOne({ _id: objectifyDocumentId(document_id) });
   const fields = Houston._get_fields([doc], { exclude_id: true });
 
   return {
