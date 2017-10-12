@@ -61,8 +61,8 @@ class houston_collection_view extends Component {
       <th key={header.name}><a href="#" className="houston-sort">{header.name}</a></th> );
   }
 
-  renderValues() {
-    const values_in_order = this.props.values_in_order();
+  renderValues(row) {
+    const values_in_order = this.props.values_in_order(row);
     
     return values_in_order && values_in_order.map( value =>
       <td data-field={value.field_name} key={value.field_name} className='houston-collection-field'>
@@ -79,7 +79,7 @@ class houston_collection_view extends Component {
       <tr id={`ID_${sort_order}`} data-id={row._id} key={row._id}>
         <td><HoustonLink href={`${Houston._ROOT_ROUTE}/${name}/${row._id}`} history={history}><i
             className="fa fa-file"></i>{row._id}</HoustonLink></td>
-        {this.renderValues()}
+        {this.renderValues(row)}
         <td className="action-cell" >
           {/*{> _houston_custom_actions collection_info=collection_info document=this size="xs" }*/}
           <div data-id={row._id}
@@ -268,15 +268,15 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
     });
   }
 
-  const values_in_order = () => {
-    const fields_in_order = get_collection_view_fields(collection_name, collection_info);
+  const values_in_order = (row) => {
+    const fields_in_order = get_collection_view_fields(row.collection, collection_info);
     if (fields_in_order) {
       const names_in_order = _.clone(fields_in_order);
-      const values = (fields_in_order.slice(1).map((field) => Houston._nested_field_lookup(this, field.name)));  // skip _id
+      const values = (fields_in_order.slice(1).map((field) => Houston._nested_field_lookup(row, field.name)));  // skip _id
       return ((() => {
         const result = [];
         for (let [field_value, {name:field_name}] of _.zip(values, names_in_order.slice(1))) {
-          result.push({field_value: field_value.toString(), field_name, collection: this.collection});
+          result.push({ field_value: field_value.toString(), field_name, collection: row.collection });
         }
         return result;
       })());
