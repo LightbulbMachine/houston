@@ -15,6 +15,8 @@ Npm.depends({
   'react-dom': '15.6.1',
   'react-router': '3.0.5',
   'react-router-dom': '4.1.2',
+  'react-motion': '0.5.2',
+  'react-collapse': '4.0.3',
 });
 
 Package.on_use(function(api) {

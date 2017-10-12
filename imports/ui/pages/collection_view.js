@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
+import { Collapse } from 'react-collapse';
 import { setup_collection } from '../../util/subs';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
@@ -8,7 +9,14 @@ import Houston from '../../../client/lib/shared';
 class houston_collection_view extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      collapseOpened: false,
+    };
+
     this.num_of_records = this.num_of_records.bind(this);
+    this.handleCollapse = this.handleCollapse.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
     this.handleSort = this.handleSort.bind(this);
     this.handleInlineEdit = this.handleInlineEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -35,6 +43,25 @@ class houston_collection_view extends Component {
   nonid_headers() {
     const headers = this.headers();
     return headers && headers.slice(1);
+  }
+
+  handleCollapse(e) {
+    e.preventDefault();
+    this.setState({ collapseOpened: ! this.state.collapseOpened });
+    // let the expand/collapse happen first (TODO: replace with non-jquery code)
+    return setTimeout((() => $('.houston-column-filter').first().focus()), 0);
+  }
+
+  handleFilter(e) {
+    const { name, resubscribe, sort_by, filter_query } = this.props;
+    const field_selectors = {};
+    $('.houston-column-filter').each(function() {
+      if (this.value) {
+        return field_selectors[this.dataset.id] = this.value;
+      }
+    });
+    Houston._session('field_selectors', field_selectors);
+    resubscribe(name, sort_by, filter_query);
   }
 
   handleSort(e) {
@@ -123,7 +150,9 @@ class houston_collection_view extends Component {
           <div className="input-sm input-group-addon">{header.name}</div>
           <input className="form-control houston-column-filter input-sm"
                  type="text" data-id={header.name}
-                 placeholder={header.type} value={header.filter_value} />
+                 placeholder={header.type}
+                 value={header.filter_value}
+                 onKeyUp={this.handleFilter} />
         </div>
       </div> );
   }
@@ -166,6 +195,7 @@ class houston_collection_view extends Component {
 
   render() {
     const { name, history } = this.props;
+    const { collapseOpened } = this.state;
 
     return (
       <div>
@@ -220,17 +250,19 @@ class houston_collection_view extends Component {
               <div className="panel-heading">
                 <div className="panel-title">
                   <a id="expand-filter" data-toggle="collapse" data-parent="#accordion"
-                     href="#collapseOne">
+                     href="#collapseOne" onClick={this.handleCollapse}>
                     <h4><i className="fa fa-filter"></i>Filter&nbsp;<i
                         className="fa fa-caret-down"></i></h4>
                   </a>
                 </div>
               </div>
-              <div id="collapseOne" className="panel-collapse collapse">
-                <form className="form-inline" role="form">
-                  {this.renderNonIdHeaders()}
-                </form>
-              </div>
+              <Collapse isOpened={this.state.collapseOpened}>
+                <div id="collapseOne" className="panel-collapse" style={{ minHeight: '30px' }}>
+                  <form className="form-inline" role="form">
+                    {this.renderNonIdHeaders()}
+                  </form>
+                </div>
+              </Collapse>
             </div>
           </div>
         </div>
