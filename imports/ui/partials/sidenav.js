@@ -12,7 +12,8 @@ class houston_sidenav extends Component {
   }
 
   is_active(name) {
-    return name === Houston._session('collection_name') ? 'active' : '';
+    const { collectionName } = this.props;
+    return name === collectionName ? 'active' : '';
   }
 
   renderIfAdmin() {
@@ -79,6 +80,7 @@ const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
     loading,
     collections: collections._collection.find().fetch(),
     currentUserIsAdmin: Houston._user_is_admin(Meteor.userId()),
+    collectionName: Houston._session('collection_name'),
   };
 
 }, houston_sidenav);
