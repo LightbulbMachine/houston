@@ -10,6 +10,7 @@ class houston_collection_view extends Component {
     super(props);
     this.num_of_records = this.num_of_records.bind(this);
     this.handleSort = this.handleSort.bind(this);
+    this.handleInlineEdit = this.handleInlineEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleDeleteAll = this.handleDeleteAll.bind(this);
   }
@@ -38,7 +39,7 @@ class houston_collection_view extends Component {
 
   handleSort(e) {
     e.preventDefault();
-    const { name, resubscribe, rows } = this.props;
+    const { name, resubscribe, sort_by, filter_query, rows } = this.props;
     const sort_key = e.currentTarget.dataset.name;
     if (Houston._session('sort_key') === sort_key) {
       Houston._session('sort_order', Houston._session('sort_order') * - 1);
@@ -47,7 +48,46 @@ class houston_collection_view extends Component {
       Houston._session('sort_order', 1);
     }
 
-    resubscribe(name, get_sort_by(), get_filter_query(Houston._get_collection(name)));
+    resubscribe(name, sort_by, filter_query);
+  }
+
+  handleInlineEdit(e) {
+    // TODO: completeley rewrite this method to leverage react
+    // instead of using jquery and manipulating the DOM
+    const { name, collection } = this.props;
+    const target = e.currentTarget;
+    const $this = $(target);
+    let field_name = target.dataset.field;
+    const type = Houston._get_type(field_name, collection);
+    const input = 'text'; // TODO schemaToInputType type fix on blur bug
+    let old_val = $this.text().trim();
+    
+    $this.removeClass('houston-collection-field');
+    $this.html(`<input type='${input}' class='input-sm form-control' placeholder='${type}' value='${old_val}'>`);
+    old_val = Houston._convert_to_correct_type(field_name, old_val,
+        collection);
+    $this.find('input').select();
+    $this.find('input').on('keydown', function(event) {
+      if (event.keyCode === 13) { return event.currentTarget.blur(); }
+    });
+    
+    return $this.find('input').on('blur', function() {
+      let updated_val = $this.find('input').val();
+      $this.addClass('houston-collection-field');
+      const document_id = $this[0].parentNode.dataset.id;
+      field_name = $this.data('field');
+      updated_val = Houston._convert_to_correct_type(field_name, updated_val,
+        collection);
+      const update_dict = {};
+      update_dict[field_name] = updated_val;
+      if (updated_val === old_val) {
+        return $this.html(updated_val.toString());
+      } else {
+        $this.html('');
+        return Houston._call(`${name}_update`,
+          document_id, {$set: update_dict});
+      }
+    });
   }
 
   handleDelete(e) {
@@ -99,7 +139,7 @@ class houston_collection_view extends Component {
     const values_in_order = this.props.values_in_order(row);
     
     return values_in_order && values_in_order.map( value =>
-      <td data-field={value.field_name} key={value.field_name} className='houston-collection-field'>
+      <td data-field={value.field_name} key={value.field_name} className='houston-collection-field' onDoubleClick={this.handleInlineEdit}>
         {value.field_value}
       </td> );
   }
@@ -290,10 +330,11 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
   const collection = Houston._get_collection(collection_name);
   const collection_info = Houston._collections.collections.findOne({ name: collection_name });
   const collection_count = collection_info && collection_info.count;
+  const filter_query = get_filter_query(collection);
+  const sort_by = get_sort_by();
   
   const rows = () => {
-    const query = get_filter_query(Houston._get_collection(collection_name));
-    const documents = collection.find(query, {sort: get_sort_by()}).fetch();
+    const documents = collection.find(filter_query, { sort: sort_by }).fetch();
 
     return _.map(documents, function(d) {
       d.collection = collection_name;
@@ -331,7 +372,9 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
     collection,
     collection_info,
     collection_count,
+    filter_query,
     rows: rows(),
+    sort_by,
     values_in_order,
     resubscribe,
     name: collection_name,
