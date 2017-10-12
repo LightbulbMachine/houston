@@ -7,11 +7,24 @@ import Houston from '../../../client/lib/shared';
 class houston_sidenav extends Component {
   constructor(props) {
     super(props);
+    this.renderIfAdmin = this.renderIfAdmin.bind(this);
     this.renderCollections = this.renderCollections.bind(this);
   }
 
   is_active(name) {
     return name === Houston._session('collection_name') ? 'active' : '';
+  }
+
+  renderIfAdmin() {
+    const { currentUserIsAdmin } = this.props;
+
+    if (currentUserIsAdmin) {
+      return (
+        <ul className="nav nav-sidebar">
+          {this.renderCollections()}
+        </ul>
+      );
+    }
   }
 
   renderCollections() {
@@ -32,11 +45,7 @@ class houston_sidenav extends Component {
     return loading ? <div>Loading</div> : (
       <div>
         <h6><i className="fa fa-database"></i>Collections</h6>
-        {/*{#if currentUserIsAdmin}*/}
-        <ul className="nav nav-sidebar">
-          {this.renderCollections()}
-        </ul>
-        {/*{/if}*/}
+        {this.renderIfAdmin()}
         <hr />
 
         <ul className="nav nav-sidebar">
@@ -69,6 +78,7 @@ const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
   return {
     loading,
     collections: collections._collection.find().fetch(),
+    currentUserIsAdmin: Houston._user_is_admin(Meteor.userId()),
   };
 
 }, houston_sidenav);
