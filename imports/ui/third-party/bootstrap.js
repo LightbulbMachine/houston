@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 export default class bootstrap extends Component {
   render() {
+    const nbsp = '\u00A0';
+
     return (
       <style dangerouslySetInnerHTML={{__html: `
         @import url("//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css");
@@ -4247,7 +4249,7 @@ export default class bootstrap extends Component {
         }
 
         .breadcrumb > li + li:before {
-          content: "/\00a0";
+          content: "${nbsp}/";
           padding: 0 5px;
           color: #cccccc;
         }

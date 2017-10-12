@@ -15,11 +15,18 @@ export default class HoustonLink extends Component {
   }
 
   render() {
-    const { href } = this.props
-    return (
-      <a href={href} onClick={this.handleClick}>
-        {this.props.children}
-      </a>
-    );
+    const { href, id, className, target } = this.props;
+
+    return target && target === 'blank' ?
+      (
+        <a href={href} id={id} className={className} target="_blank">
+          {this.props.children}
+        </a>
+      ) :
+      (
+        <a href={href} id={id} className={className} onClick={this.handleClick}>
+          {this.props.children}
+        </a>
+      );
   }
 }
