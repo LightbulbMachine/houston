@@ -15,9 +15,9 @@ export default class HoustonLink extends Component {
   }
 
   render() {
-    const { href } = this.props
+    const { href, id, className } = this.props
     return (
-      <a href={href} onClick={this.handleClick}>
+      <a href={href} id={id} className={className} onClick={this.handleClick}>
         {this.props.children}
       </a>
     );

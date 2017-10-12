@@ -65,23 +65,26 @@ class houston_collection_view extends Component {
     const values_in_order = this.props.values_in_order();
     
     return values_in_order && values_in_order.map( value =>
-      <td data-field={value.field_name} className='houston-collection-field'>
+      <td data-field={value.field_name} key={value.field_name} className='houston-collection-field'>
         {value.field_value}
       </td> );
   }
 
   renderRows() {
+    const { name, history } = this.props;
     const rows = this.props.rows();
+    const sort_order = Houston._session('sort_order');
+
     return rows && rows.map( row =>
-      <tr id="ID_{{sort_order}}" data-id={row._id} key={row._id}>
-        <td><a href={'#'/*{{pathFor 'houston_document'}}*/}><i
-            className="fa fa-file"></i>{row._id}</a></td>
+      <tr id={`ID_${sort_order}`} data-id={row._id} key={row._id}>
+        <td><HoustonLink href={`${Houston._ROOT_ROUTE}/${name}/${row._id}`} history={history}><i
+            className="fa fa-file"></i>{row._id}</HoustonLink></td>
         {this.renderValues()}
         <td className="action-cell" >
           {/*{> _houston_custom_actions collection_info=collection_info document=this size="xs" }*/}
           <div data-id={row._id}
                className="btn btn-xs houston-delete-doc btn-danger">
-            <i className="fa fa-trash-o"></i>Delete
+            <i className="fa fa-trash-o"></i>Delete {sort_order}
           </div>
         </td>
       </tr> );
@@ -121,7 +124,7 @@ class houston_collection_view extends Component {
           <div className="col-md-12">
             <div className="page-header">
               <div id="collection-page-header-actions" className="pull-right">
-                <button data-name="{{name}}" className="btn btn-sm houston-delete-all btn-danger">
+                <button data-name={name} className="btn btn-sm houston-delete-all btn-danger">
                   <i className="fa fa-trash-o"></i>
                   Delete all
                 </button>
@@ -190,7 +193,7 @@ class HoustonNewDocumentField extends Component {
 
         <div className="col-sm-8">
           <textarea className="input-sm houston-field form-control"
-                    placeholder={header.type} name={header.name}>{header.value}</textarea>
+                    placeholder={header.type} name={header.name} defaultValue={header.value}></textarea>
         </div>
 
       </div>

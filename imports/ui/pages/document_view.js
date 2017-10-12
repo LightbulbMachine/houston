@@ -44,7 +44,7 @@ class houston_document_view extends Component {
     
     return fields && fields.map( field =>
       <div className="form-group" key={field.name_id}>
-        <label htmlFor="{field.name_id}" className="col-sm-3 control-label">{field.name_id}</label>
+        <label htmlFor={field.name_id} className="col-sm-3 control-label">{field.name_id}</label>
         <div className="col-sm-9">
           <textarea
             className="houston-field form-control"
@@ -58,18 +58,18 @@ class houston_document_view extends Component {
   }
 
   render() {
-    const { name, document_id, loading } = this.props;
+    const { name, document_id, loading, history } = this.props;
 
     return (
       <div>
         <ul className="breadcrumb">
           <li>
-            <a href="{pathFor 'houston_home'}" className="houston-home"><i
-                className="fa fa-home"></i>Home</a>
+            <HoustonLink href={Houston._ROOT_ROUTE} history={history} className="houston-home"><i
+              className="fa fa-home"></i>Home</HoustonLink>
           </li>
           <li>
-            <a href="{pathFor 'houston_collection' collection_name=name}" className="houston-collection"><i
-                className="fa fa-database"></i>{name}</a>
+            <HoustonLink href={`${Houston._ROOT_ROUTE}/${name}`} history={history} className="houston-collection"><i
+              className="fa fa-database"></i>{name}</HoustonLink>
           </li>
           <li className="active"><i className="fa fa-file"></i>{document_id}</li>
         </ul>
@@ -82,9 +82,9 @@ class houston_document_view extends Component {
 
           <div id="houston-doc-actions" className="form-group">
             <div className="col-sm-offset-3 col-sm-9">
-              <a href="{pathFor 'houston_collection' collection_name=name }" id="houston-back" className="btn btn-primary"><i
+              <HoustonLink href={`${Houston._ROOT_ROUTE}/${name}`} history={history} id="houston-back" className="btn btn-primary"><i
                   className="fa fa-reply"></i>Back
-              </a>
+              </HoustonLink>
               <button type="button" id="houston-save" className="btn btn-success" onClick={this.handleSave}><i
                   className="fa fa-save"></i>Save
               </button>
