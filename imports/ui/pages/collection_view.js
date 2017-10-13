@@ -12,6 +12,8 @@ class houston_collection_view extends Component {
 
     this.state = {
       collapseOpened: false,
+      docFormHidden: true,
+      newButtonHidden: false,
     };
 
     this.num_of_records = this.num_of_records.bind(this);
@@ -19,6 +21,9 @@ class houston_collection_view extends Component {
     this.handleFilter = this.handleFilter.bind(this);
     this.handleSort = this.handleSort.bind(this);
     this.handleInlineEdit = this.handleInlineEdit.bind(this);
+    this.handleNew = this.handleNew.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleDeleteAll = this.handleDeleteAll.bind(this);
   }
@@ -35,16 +40,6 @@ class houston_collection_view extends Component {
     }
   }
 
-  headers() {
-    const { name, collection_info } = this.props;
-    return get_collection_view_fields(name, collection_info);
-  }
-
-  nonid_headers() {
-    const headers = this.headers();
-    return headers && headers.slice(1);
-  }
-
   handleCollapse(e) {
     e.preventDefault();
     this.setState({ collapseOpened: ! this.state.collapseOpened });
@@ -55,6 +50,7 @@ class houston_collection_view extends Component {
   handleFilter(e) {
     const { name, resubscribe, sort_by, filter_query } = this.props;
     const field_selectors = {};
+    // TODO: find react solution
     $('.houston-column-filter').each(function() {
       if (this.value) {
         return field_selectors[this.dataset.id] = this.value;
@@ -126,6 +122,47 @@ class houston_collection_view extends Component {
     }
   }
 
+  handleNew(e) {
+    e.preventDefault();
+    this.setState({ docFormHidden: false });
+    this.setState({ newButtonHidden: true });
+  }
+
+  handleAdd(e) {
+    e.preventDefault();
+    const { name, collection, nonid_headers } = this.props;
+
+    const new_doc = {};
+    _.each(nonid_headers, (header) => {
+      const field = this[Houston._houstonize(header.name)];
+      // Unflatten the field names (e.g. foods.app -> {foods: {app:}})
+      const keys = field.name.split('.');
+      const final_key = keys.pop();
+
+      const value = Houston._convert_to_correct_type(field.name, field.value,
+        collection);
+      let doc_iter = new_doc;
+      for (let key of keys) {
+        if (!doc_iter[key]) { doc_iter[key] = {}; }
+        doc_iter = doc_iter[key];
+      }
+
+      doc_iter[final_key] = value;
+
+      field.value = '';
+    });
+    
+    console.log("new_doc", new_doc);
+    return Houston._call(`${name}_insert`, new_doc);
+  }
+
+  handleCancel(e) {
+    e.preventDefault();
+    this.setState({ docFormHidden: true });
+    this.setState({ newButtonHidden: false });
+    document.getElementById("houston-create-row").reset();
+  }
+
   handleDeleteAll(e) {
     e.preventDefault();
     const { name } = this.props;
@@ -135,14 +172,26 @@ class houston_collection_view extends Component {
   }
 
   renderNewDocumentFields() {
-    const nonid_headers = this.nonid_headers();
+    const { nonid_headers } = this.props;
 
     return nonid_headers && nonid_headers.map( header =>
-      <HoustonNewDocumentField header={header} key={header.name} /> );
+      <div className="form-group" key={header.name}>
+        <label htmlFor={header.name} className="col-sm-4 control-label">{header.name}</label>
+
+        <div className="col-sm-8">
+          <textarea className="input-sm houston-field form-control"
+                    placeholder={header.type}
+                    name={header.name}
+                    defaultValue={header.value}
+                    ref={input => this[Houston._houstonize(header.name)] = input}></textarea>
+        </div>
+
+      </div>
+    );
   }
 
   renderNonIdHeaders() {
-    const nonid_headers = this.nonid_headers();
+    const { nonid_headers } = this.props;
 
     return nonid_headers && nonid_headers.map( header =>
       <div className="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" key={header.name}>
@@ -158,7 +207,7 @@ class houston_collection_view extends Component {
   }
 
   renderHeaders() {
-    const headers = this.headers();
+    const { headers } = this.props;
 
     return headers && headers.map( header =>
       <th key={header.name}><a href="#" className="houston-sort" onClick={this.handleSort} data-name={header.name}>{header.name}</a></th> );
@@ -195,7 +244,7 @@ class houston_collection_view extends Component {
 
   render() {
     const { name, history } = this.props;
-    const { collapseOpened } = this.state;
+    const { collapseOpened, docFormHidden, newButtonHidden } = this.state;
 
     return (
       <div>
@@ -205,7 +254,7 @@ class houston_collection_view extends Component {
               className="fa fa-home"></i>Home</HoustonLink></li>
          <li className="active"><i className="fa fa-database"></i>{ name }</li>
         </ul>
-        <div className="row hidden" id="houston-create-document">
+        <div className={`row ${docFormHidden && 'hidden'}`} id="houston-create-document">
           <h3>Add more { name }</h3>
 
           <form id="houston-create-row" className="form-horizontal" role="form">
@@ -213,11 +262,11 @@ class houston_collection_view extends Component {
 
             <div className="form-group">
               <div className="col-sm-12">
-                <button type="button" id="houston-cancel" className="btn btn-primary"><i
+                <button type="button" id="houston-cancel" className="btn btn-primary" onClick={this.handleCancel}><i
                     className="fa fa-times"></i>Cancel
                 </button>
                 <button type="button" id="houston-add"
-                        className="btn btn-success pull-right"><i className="fa fa-plus"></i>Add
+                        className="btn btn-success pull-right" onClick={this.handleAdd}><i className="fa fa-plus"></i>Add
                 </button>
               </div>
             </div>
@@ -232,7 +281,7 @@ class houston_collection_view extends Component {
                   <i className="fa fa-trash-o"></i>
                   Delete all
                 </button>
-                <button id="houston-create-btn" className="btn btn-sm btn-success">
+                <button id="houston-create-btn" className={`btn btn-sm btn-success ${newButtonHidden && 'hidden'}`} onClick={this.handleNew}>
                   <i className="fa fa-plus"></i>
                   New {name}
                 </button>
@@ -285,23 +334,6 @@ class houston_collection_view extends Component {
             </table>
           </div>
         </div>
-      </div>
-    );
-  }
-}
-
-class HoustonNewDocumentField extends Component {
-  render() {
-    const { header } = this.props;
-    return (
-      <div className="form-group">
-        <label htmlFor={header.name} className="col-sm-4 control-label">{header.name}</label>
-
-        <div className="col-sm-8">
-          <textarea className="input-sm houston-field form-control"
-                    placeholder={header.type} name={header.name} defaultValue={header.value}></textarea>
-        </div>
-
       </div>
     );
   }
@@ -364,6 +396,8 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
   const collection_count = collection_info && collection_info.count;
   const filter_query = get_filter_query(collection);
   const sort_by = get_sort_by();
+  const headers = get_collection_view_fields(collection_name, collection_info);
+  const nonid_headers = headers && headers.slice(1);
   
   const rows = () => {
     const documents = collection.find(filter_query, { sort: sort_by }).fetch();
@@ -409,6 +443,8 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
     sort_by,
     values_in_order,
     resubscribe,
+    headers,
+    nonid_headers,
     name: collection_name,
   };
 
