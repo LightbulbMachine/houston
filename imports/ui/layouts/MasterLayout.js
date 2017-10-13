@@ -10,6 +10,7 @@ import houston_flash_message from '../partials/flash_message';
 
 import houston_login from '../pages/admin_login';
 import houston_change_password from '../pages/admin_change_password';
+import houston_custom_template_view from '../pages/custom_template_view';
 import houston_db_view from '../pages/db_view';
 import houston_collection_view from '../pages/collection_view';
 import houston_document_view from '../pages/document_view';
@@ -23,6 +24,7 @@ const componentsList = {
   houston_sidenav,
   houston_flash_message,
   houston_change_password,
+  houston_custom_template_view,
   houston_login,
   houston_db_view,
   houston_collection_view,
