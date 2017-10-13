@@ -22,3 +22,5 @@ Houston.hide_collection = function(collection) {
   const col = Houston._collections.collections.findOne({name: collection._name});
   if (col != null) { return Houston._collections.collections.remove(col); }
 };
+
+export { Houston };

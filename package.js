@@ -70,7 +70,6 @@ Package.on_use(function(api) {
                  'lib/shared.js',
                  'lib/menu.js'],
                 ['client', 'server']);
-  api.mainModule('client/routes.js', 'client');
   api.add_files([
     // shared
     'client/lib/shared.js',
@@ -88,6 +87,8 @@ Package.on_use(function(api) {
   'client');
 
   api.add_files(['server/publications.js', 'server/exports.js', 'server/methods.js'], 'server');
+  api.mainModule('server/exports.js', 'server');
+  api.mainModule('client/routes.js', 'client');
 });
 
 // TODO: remove old .coffee files

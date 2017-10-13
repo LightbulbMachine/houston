@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Collapse } from 'react-collapse';
 import { setup_collection } from '../../util/subs';
 import HoustonLink from '../partials/link';
+import HoustonCustomActions from '../partials/custom_actions';
 import Houston from '../../../client/lib/shared';
 
 class houston_collection_view extends Component {
@@ -223,7 +224,7 @@ class houston_collection_view extends Component {
   }
 
   renderRows() {
-    const { name, history, rows } = this.props;
+    const { name, history, rows, collection_info } = this.props;
     const sort_order = Houston._session('sort_order');
 
     return rows && rows.map( row =>
@@ -232,7 +233,7 @@ class houston_collection_view extends Component {
             className="fa fa-file"></i>{row._id}</HoustonLink></td>
         {this.renderValues(row)}
         <td className="action-cell" >
-          {/*{> _houston_custom_actions collection_info=collection_info document=this size="xs" }*/}
+          <HoustonCustomActions collection_info={collection_info} doc={row} size="xs" />
           <div data-id={row._id}
                className="btn btn-xs houston-delete-doc btn-danger"
                onClick={this.handleDelete}>
