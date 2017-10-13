@@ -1,10 +1,10 @@
-_RELEASE_VERSION = "2.0.7";
+_RELEASE_VERSION = "3.0.0";
 
 Package.describe({
   name: "houston:admin",
   summary: "A zero-config Meteor Admin",
   version: _RELEASE_VERSION,
-  git: "https://github.com/gterrono/houston.git"
+  git: "https://github.com/zzaacchh/houston.git"
 });
 
 //////////////////////////////////////////////////////////////////
@@ -15,6 +15,8 @@ Npm.depends({
   'react-dom': '15.6.1',
   'react-router': '3.0.5',
   'react-router-dom': '4.1.2',
+  'react-motion': '0.5.2',
+  'react-collapse': '4.0.3',
 });
 
 Package.on_use(function(api) {
@@ -39,53 +41,18 @@ Package.on_use(function(api) {
   //////////////////////////////////////////////////////////////////
   // Third-party package dependencies
   //////////////////////////////////////////////////////////////////
-  // api.use('iron:router@1.0.1', 'client');
   api.use('tmeasday:paginated-subscription@0.2.4', 'client');
   api.use('dburles:mongo-collection-instances@0.3.4', ['client', 'server']);
 
   //////////////////////////////////////////////////////////////////
   // internal files
   //////////////////////////////////////////////////////////////////
-  // load html first, https://github.com/meteor/meteor/issues/282
-  api.add_files([
-    // views
-    'client/admin_login.html', 'client/db_view.html',
-    'client/collection_view.html', 'client/document_view.html',
-    'client/admin_change_password.html', 'client/custom_template_view.html',
-    // partials
-    'client/partials/admin_nav.html',
-    'client/partials/flash_message.html',
-    'client/partials/custom_actions.html',
-    // layout
-    'client/master_layout.html',
-    'client/third-party/collapse.js.html',
-    'client/third-party/bootstrap.html',
-    'client/style.css.html'
-    ],
-  'client');
-
+  // TODO: import these files in the mainModules
   api.add_files(['lib/collections.js',
                  'lib/shared.js',
                  'lib/menu.js'],
                 ['client', 'server']);
-  api.mainModule('client/routes.js', 'client');
-  api.add_files([
-    // shared
-    'client/lib/shared.js',
-    // shared partials
-    'client/partials/admin_nav.js',
-    'client/partials/flash_message.js',
-    'client/partials/custom_actions.js',
-    // view logic
-    'client/custom_template_view.js', 'client/admin_login.js',
-    'client/collection_view.js', 'client/document_view.js',
-    'client/admin_change_password.js', 'client/db_view.js',
-    // router
-    // 'client/routes.js'
-    ],
-  'client');
 
-  api.add_files(['server/publications.js', 'server/exports.js', 'server/methods.js'], 'server');
+  api.mainModule('server/index.js', 'server');
+  api.mainModule('client/index.js', 'client');
 });
-
-// TODO: remove old .coffee files
