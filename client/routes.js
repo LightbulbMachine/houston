@@ -110,6 +110,12 @@ class Routes extends Component {
               })
             }
             {
+              this.houston_route('change_password', {
+                houston_path: '/password',
+                template: 'change_password'
+              })
+            }
+            {
               this.houston_route('collection', {
                 houston_path: '/:collection_name',
                 template: 'collection_view',
