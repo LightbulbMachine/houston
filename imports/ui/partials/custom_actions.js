@@ -13,10 +13,13 @@ class HoustonCustomActions extends Component {
 
   handleCustomAction(e) {
     e.preventDefault();
-    const { collection_info, doc } = this.props;
+    const { collection_info, doc, callback } = this.props;
     const action = e.currentTarget.dataset.action;
 
-    return Meteor.call(Houston._custom_method_name(collection_info.name, action), doc, Houston._show_flash);
+    return Meteor.call(Houston._custom_method_name(collection_info.name, action), doc, () => {
+      Houston._show_flash();
+      callback && callback();
+    });
   }
 
   renderActions() {

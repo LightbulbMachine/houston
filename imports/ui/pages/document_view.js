@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { setup_collection } from '../../util/subs';
 import { objectifyDocumentId } from '../../util/documentId';
 import HoustonLink from '../partials/link';
+import HoustonCustomActions from '../partials/custom_actions';
 import Houston from '../../../client/lib/shared';
 
 class houston_document_view extends Component {
@@ -12,6 +13,12 @@ class houston_document_view extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.renderFields = this.renderFields.bind(this);
+    this.goBack = this.goBack.bind(this);
+  }
+
+  goBack() {
+    const { name, history } = this.props;
+    history.push(`${Houston._ROOT_ROUTE}/${name}`);
   }
 
   handleSave(e) {
@@ -59,7 +66,7 @@ class houston_document_view extends Component {
   }
 
   render() {
-    const { name, document_id, loading, history } = this.props;
+    const { name, doc, document_id, collection_info, loading, history } = this.props;
 
     return (
       <div>
@@ -94,7 +101,7 @@ class houston_document_view extends Component {
                   className="fa fa-trash-o"></i>Delete
               </button>
               <div className="pull-right">
-                {/*{> _houston_custom_actions document=document collection_info=collection_info size="md" }*/}
+                <HoustonCustomActions collection_info={collection_info} doc={doc} size="md" callback={this.goBack} />
               </div>
             </div>
           </div>
@@ -110,6 +117,7 @@ const houston_document_view_with_data = createContainer(({ match }) => {
   const sub = setup_collection(name, document_id);
   const loading = ! sub.ready();
   const collection = Houston._get_collection(name);
+  const collection_info = Houston._collections.collections.findOne({ name });
   const doc = collection.findOne({ _id: objectifyDocumentId(document_id) });
   const fields = Houston._get_fields([doc], { exclude_id: true });
 
@@ -118,6 +126,7 @@ const houston_document_view_with_data = createContainer(({ match }) => {
     document_id,
     doc,
     collection,
+    collection_info,
     loading,
     fields: _.map(fields, (field) => {
       const value = Houston._nested_field_lookup(doc, field.name);
