@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Houston from '../../../client/lib/shared';
 
-export default class houston_change_password extends Component {
+class houston_change_password extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -47,3 +48,5 @@ export default class houston_change_password extends Component {
     );
   }
 }
+
+export default withRouter(houston_change_password);
