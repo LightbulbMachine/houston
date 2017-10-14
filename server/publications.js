@@ -77,9 +77,15 @@ const sync_collections = function() {
   _.each(mongoCollections, function(collection){
     let instance = Mongo.Collection.get(collection.s.name);
     if (!instance) {
-      instance = new Mongo.Collection(collection.s.name);
+      try {
+        instance = new Mongo.Collection(collection.s.name);
+      } catch(e) {
+        console.log(e);
+      }
     }
-    collections[collection.s.name] = instance;
+    if (instance) {
+      collections[collection.s.name] = instance;
+    }
   });
 
   const _sync_collections = function(meh, collections_db) {
