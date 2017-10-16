@@ -43,11 +43,18 @@ Houston._subscribe_to_collections();
 class Routes extends Component {
   constructor(props) {
     super(props);
+    this.hideApp = this.hideApp.bind(this);
     this.houston_route = this.houston_route.bind(this);
   }
 
   renderTemplate(options) {
+    this.hideApp();
     return <HoustonMasterLayout {...options}/>;
+  }
+
+  hideApp() {
+    $('#app').hide();
+    $('#admin').show();
   }
 
   houston_route(route_name, options) {
@@ -84,7 +91,7 @@ class Routes extends Component {
           }
           return this.renderTemplate(options);
         }}
-      />
+      />;
   }
 
 
