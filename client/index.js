@@ -32,6 +32,9 @@ Houston._show_flash = function(err, result) {
   setTimeout((() => Houston._session('flash_show', false)), 2000);
 };
 
+const appId = 'app'; // TODO: add option to set this in meteor settings
+const adminId = Houston._houstonize('admin');
+
 BASE_HOUSTON_ROUTES = _.map([
   'home',
   'collection',
@@ -55,8 +58,8 @@ class Routes extends Component {
   }
 
   hideApp() {
-    $('#app').hide();
-    $('#admin').show();
+    $(`#${appId}`).hide();
+    $(`#${adminId}`).show();
   }
 
   houston_route(route_name, options) {
@@ -172,7 +175,10 @@ export { Houston, AdminRoutes };
 
 
 $(document).ready(function () {
-  render(<AdminRoutes history={history} />, document.getElementById('admin'));
+  var adminRootDiv = document.createElement('div');
+  adminRootDiv.id = adminId;
+  document.body.appendChild(adminRootDiv);
+  render(<AdminRoutes history={history} />, adminRootDiv);
 });
 
 // For debugging purposes, uncomment:
