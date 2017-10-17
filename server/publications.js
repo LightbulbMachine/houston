@@ -80,7 +80,7 @@ const sync_collections = function() {
       try {
         instance = new Mongo.Collection(collection.s.name);
       } catch(e) {
-        console.log(e);
+        console.log('Houston:', e);
       }
     }
     if (instance) {
