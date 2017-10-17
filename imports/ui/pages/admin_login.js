@@ -3,6 +3,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
+import { validatePassword, validateLogin, validateEmail } from '../../util/validate';
 
 class houston_login extends Component {
   constructor(props) {
@@ -32,10 +33,24 @@ class houston_login extends Component {
     if (adminUserExists) {
       Meteor.loginWithPassword(email, password, afterLogin);
     } else {
-      Accounts.createUser({
-        email,
-        password
-      }, (error) => {
+      const user = { password };
+
+      try {
+        validatePassword(password);
+        validateLogin(email);
+      }
+      catch (e) {
+        console.error('error', e);
+        return;
+      }
+
+      if (validateEmail('email', email)) {
+        user.email = email;
+      } else {
+        user.username = email;
+      }
+
+      Accounts.createUser(user, (error) => {
         if (error) { return afterLogin(error); }
         Houston.becomeAdmin(afterLogin);
       });
