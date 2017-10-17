@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Houston from '../../../client/lib/shared';
 
 export default class HoustonLink extends Component {
   constructor(props) {
@@ -11,6 +12,10 @@ export default class HoustonLink extends Component {
     const { href } = e.currentTarget;
     const path = href.replace(/^.*\/\/[^\/]+/, '');
     const { history } = this.props;
+    // Show app container if navigating back to root
+    if (path === '/') {
+      $(`#${Houston._app_div_id}`).show();
+    }
     history.push(path);
   }
 

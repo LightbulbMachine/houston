@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { render } from 'react-dom';
+import createHistory from 'history/createBrowserHistory';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Houston from './lib/shared';
 import { DEFAULTS } from '../imports/constants';
 
 import HoustonMasterLayout from '../imports/ui/layouts/MasterLayout';
 
+const history = createHistory();
 const publicSettings = Meteor.settings && Meteor.settings.public;
 
 Houston._ROOT_ROUTE = publicSettings.houston_root_route || DEFAULTS._ROOT_ROUTE;  
 Houston._page_length = publicSettings.houston_documents_per_page || DEFAULTS._page_length;  
+Houston._app_div_id = publicSettings.houston_app_div_id || DEFAULTS._app_div_id;
+Houston._admin_div_id = publicSettings.houston_admin_div_id || DEFAULTS._admin_div_id;
 Houston._subscribe = name => Meteor.subscribe(Houston._houstonize(name));
 Houston._houstonize_route = name => Houston._houstonize(name).slice(1);
 Houston._go = (route_name, options) => Router.go(Houston._houstonize_route(route_name), options);
@@ -53,8 +57,8 @@ class Routes extends Component {
   }
 
   hideApp() {
-    $('#app').hide();
-    $('#admin').show();
+    $(`#${Houston._app_div_id}`).hide();
+    $(`#${Houston._admin_div_id}`).show();
   }
 
   houston_route(route_name, options) {
@@ -167,6 +171,14 @@ const AdminRoutes = createContainer((props) => {
 }, Routes);
 
 export { Houston, AdminRoutes };
+
+
+$(document).ready(function () {
+  var adminRootDiv = document.createElement('div');
+  adminRootDiv.id = Houston._admin_div_id;
+  document.body.appendChild(adminRootDiv);
+  render(<AdminRoutes history={history} />, adminRootDiv);
+});
 
 // For debugging purposes, uncomment:
 window.Houston = Houston;

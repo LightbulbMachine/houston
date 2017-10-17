@@ -80,7 +80,7 @@ const sync_collections = function() {
       try {
         instance = new Mongo.Collection(collection.s.name);
       } catch(e) {
-        console.log(e);
+        console.log('Houston:', e);
       }
     }
     if (instance) {
@@ -119,8 +119,9 @@ Meteor.methods({
     check(user_id, String);
     // limit one admin
     if (Houston._admins.findOne({'user_id': {$exists: true}})) { return; }
-    Houston._admins.insert({user_id});
-    Houston._admins.insert({exists: true});
+    Houston._admins.insert({ user_id }); // TODO: verify if this is still necesary since we are using Roles now
+    Houston._admins.insert({ exists: true });
+    Roles.addUsersToRoles(user_id, ['admin']);
     sync_collections(); // reloads collections in case of new app
     return true;
   }
