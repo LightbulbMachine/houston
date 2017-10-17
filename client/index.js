@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { render } from 'react-dom';
+import createHistory from 'history/createBrowserHistory';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Houston from './lib/shared';
 import { DEFAULTS } from '../imports/constants';
 
 import HoustonMasterLayout from '../imports/ui/layouts/MasterLayout';
 
+const history = createHistory();
 const publicSettings = Meteor.settings && Meteor.settings.public;
 
 Houston._ROOT_ROUTE = publicSettings.houston_root_route || DEFAULTS._ROOT_ROUTE;  
@@ -167,6 +169,11 @@ const AdminRoutes = createContainer((props) => {
 }, Routes);
 
 export { Houston, AdminRoutes };
+
+
+$(document).ready(function () {
+  render(<AdminRoutes history={history} />, document.getElementById('admin'));
+});
 
 // For debugging purposes, uncomment:
 window.Houston = Houston;
