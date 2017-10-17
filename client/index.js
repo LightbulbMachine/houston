@@ -13,6 +13,8 @@ const publicSettings = Meteor.settings && Meteor.settings.public;
 
 Houston._ROOT_ROUTE = publicSettings.houston_root_route || DEFAULTS._ROOT_ROUTE;  
 Houston._page_length = publicSettings.houston_documents_per_page || DEFAULTS._page_length;  
+Houston._app_div_id = publicSettings.houston_app_div_id || DEFAULTS._app_div_id;
+Houston._admin_div_id = publicSettings.houston_admin_div_id || DEFAULTS._admin_div_id;
 Houston._subscribe = name => Meteor.subscribe(Houston._houstonize(name));
 Houston._houstonize_route = name => Houston._houstonize(name).slice(1);
 Houston._go = (route_name, options) => Router.go(Houston._houstonize_route(route_name), options);
@@ -31,9 +33,6 @@ Houston._show_flash = function(err, result) {
   Houston._session('flash_show', true);
   setTimeout((() => Houston._session('flash_show', false)), 2000);
 };
-
-const appId = 'app'; // TODO: add option to set this in meteor settings
-const adminId = Houston._houstonize('admin');
 
 BASE_HOUSTON_ROUTES = _.map([
   'home',
@@ -58,8 +57,8 @@ class Routes extends Component {
   }
 
   hideApp() {
-    $(`#${appId}`).hide();
-    $(`#${adminId}`).show();
+    $(`#${Houston._app_div_id}`).hide();
+    $(`#${Houston._admin_div_id}`).show();
   }
 
   houston_route(route_name, options) {
@@ -176,7 +175,7 @@ export { Houston, AdminRoutes };
 
 $(document).ready(function () {
   var adminRootDiv = document.createElement('div');
-  adminRootDiv.id = adminId;
+  adminRootDiv.id = Houston._admin_div_id;
   document.body.appendChild(adminRootDiv);
   render(<AdminRoutes history={history} />, adminRootDiv);
 });
