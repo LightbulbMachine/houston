@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import { Collapse } from 'react-collapse';
 import { setup_collection } from '../../util/subs';
@@ -389,7 +389,7 @@ const get_collection_view_fields = (name, collection_info) => {
   }
 };
 
-const houston_collection_view_with_data = createContainer(({ match, subs }) => {
+const houston_collection_view_with_data = withTracker(({ match, subs }) => {
   const { collection_name } = match.params;
   const sub = setup_collection(collection_name);
   const collection = Houston._get_collection(collection_name);
@@ -449,6 +449,6 @@ const houston_collection_view_with_data = createContainer(({ match, subs }) => {
     name: collection_name,
   };
 
-}, houston_collection_view);
+})(houston_collection_view);
 
 export default withRouter(houston_collection_view_with_data);

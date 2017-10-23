@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter, Redirect } from 'react-router-dom';
 import Houston from '../../../client/lib/shared';
 
@@ -23,7 +23,7 @@ class houston_custom_template_view extends Component {
   }
 }
 
-const houston_custom_template_view_with_data = createContainer(({ match }) => {
+const houston_custom_template_view_with_data = withTracker(({ match }) => {
   const { template } = match.params;
   const menuItems = Houston.menu._menu_items;
 
@@ -40,6 +40,6 @@ const houston_custom_template_view_with_data = createContainer(({ match }) => {
     CustomComponent,
   };
 
-}, houston_custom_template_view);
+})(houston_custom_template_view);
 
 export default withRouter(houston_custom_template_view_with_data);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
@@ -166,13 +166,13 @@ class houston_login extends Component {
   }
 }
 
-const houston_login_with_data = createContainer((props) => {
+const houston_login_with_data = withTracker((props) => {
   return {
     loggedIn: Meteor.user(),
     adminUserExists: Houston._admin_user_exists(),
     currentUserIsAdmin: Houston._user_is_admin(Meteor.userId()),
   };
 
-}, houston_login);
+})(houston_login);
 
 export default withRouter(houston_login_with_data);

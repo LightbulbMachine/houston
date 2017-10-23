@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import { setup_collection } from '../../util/subs';
 import { objectifyDocumentId } from '../../util/documentId';
@@ -111,7 +111,7 @@ class houston_document_view extends Component {
   }
 }
 
-const houston_document_view_with_data = createContainer(({ match }) => {
+const houston_document_view_with_data = withTracker(({ match }) => {
   const name = match.params.collection;
   const document_id = match.params._id;
   const sub = setup_collection(name, document_id);
@@ -142,6 +142,6 @@ const houston_document_view_with_data = createContainer(({ match }) => {
     }),
   };
 
-}, houston_document_view);
+})(houston_document_view);
 
 export default withRouter(houston_document_view_with_data);

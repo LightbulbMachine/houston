@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
@@ -79,7 +79,7 @@ class houston_db_view extends Component {
   }
 }
 
-const houston_db_view_with_data = createContainer(({ waitOn, data }) => {
+const houston_db_view_with_data = withTracker(({ waitOn, data }) => {
   const subs = waitOn();
   const { collections } = Houston._collections;
 
@@ -103,6 +103,6 @@ const houston_db_view_with_data = createContainer(({ waitOn, data }) => {
     collections: collections._collection.find().fetch(),
   };
 
-}, houston_db_view);
+})(houston_db_view);
 
 export default withRouter(houston_db_view_with_data);
