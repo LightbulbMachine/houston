@@ -26,12 +26,10 @@ Package.on_use(function(api) {
   // Meteor-provided packages
   //////////////////////////////////////////////////////////////////
   api.use('deps@1.0.0', ['client', 'server']);
-  api.use('coffeescript@1.0.0', ['client', 'server']);
   api.use('accounts-base@1.0.0', ['client', 'server']);  // ?optional
   api.use('accounts-password@1.0.0', ['client', 'server']);
-  api.use('templating@1.0.0', 'client');  // ?optional
   api.use('check@1.0.0', ['client', 'server']);
-  api.use('spacebars@1.0.0', 'client');
+  api.use('jquery@1.0.0', 'client');
   api.use('underscore@1.0.4', ['client', 'server']);
   api.use('ecmascript@0.8.2', ['client', 'server']);
   api.use('session@1.1.7', 'client'); // TODO: use react state
