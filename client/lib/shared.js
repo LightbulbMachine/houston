@@ -17,9 +17,9 @@ Houston._subscribe_to_collections = function() {
   Houston._collections_sub = Houston._subscribe('collections');
 };
 
-Handlebars.registerHelper('currentUserIsAdmin', () => Houston._user_is_admin(Meteor.userId()));
+// Handlebars.registerHelper('currentUserIsAdmin', () => Houston._user_is_admin(Meteor.userId()));
 
-Handlebars.registerHelper('adminUserExists', Houston._admin_user_exists);
+// Handlebars.registerHelper('adminUserExists', Houston._admin_user_exists);
 
 if (Houston._collections == null) { Houston._collections = {}; }
 

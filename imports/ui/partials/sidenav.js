@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter, Link } from 'react-router-dom';
 import HoustonLink from './link';
 import Houston from '../../../client/lib/shared';
@@ -57,7 +57,7 @@ class houston_sidenav extends Component {
   }
 }
 
-const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
+const houston_sidenav_with_data = withTracker(({ waitOn, data }) => {
   const subs = waitOn();
   const { collections } = Houston._collections;
 
@@ -83,6 +83,6 @@ const houston_sidenav_with_data = createContainer(({ waitOn, data }) => {
     collectionName: Houston._session('collection_name'),
   };
 
-}, houston_sidenav);
+})(houston_sidenav);
 
 export default withRouter(houston_sidenav_with_data);

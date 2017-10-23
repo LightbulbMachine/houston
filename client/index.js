@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { render } from 'react-dom';
 import createHistory from 'history/createBrowserHistory';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
@@ -160,7 +160,7 @@ class Routes extends Component {
   }
 }
 
-const AdminRoutes = createContainer((props) => {
+const AdminRoutes = withTracker((props) => {
   return {
     loggedIn: Meteor.user(),
     loggingIn: Meteor.loggingIn(),
@@ -168,7 +168,7 @@ const AdminRoutes = createContainer((props) => {
     userIsAdmin: Houston._user_is_admin(Meteor.userId()),
   };
 
-}, Routes);
+})(Routes);
 
 export { Houston, AdminRoutes };
 

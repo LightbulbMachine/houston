@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import HoustonLink from './link';
 import Houston from '../../../client/lib/shared';
@@ -107,14 +107,14 @@ class houston_navbar extends Component {
   }
 }
 
-const houston_navbar_with_data = createContainer((props) => {
+const houston_navbar_with_data = withTracker((props) => {
   return {
     currentUser: Meteor.user(),
     currentUserIsAdmin: Houston._user_is_admin(Meteor.userId()),
     menu_items: Houston.menu._get_menu_items(),
   };
 
-}, houston_navbar);
+})(houston_navbar);
 
 export default withRouter(houston_navbar_with_data);
 
