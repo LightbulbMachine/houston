@@ -43,6 +43,7 @@ Package.on_use(function(api) {
   //////////////////////////////////////////////////////////////////
   api.use('tmeasday:paginated-subscription@0.2.4', 'client');
   api.use('dburles:mongo-collection-instances@0.3.4', ['client', 'server']);
+  api.use('alanning:roles@1.2.16', ['client', 'server']);
 
   //////////////////////////////////////////////////////////////////
   // internal files
