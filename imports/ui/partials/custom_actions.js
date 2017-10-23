@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter, Link } from 'react-router-dom';
 import HoustonLink from './link';
 import Houston from '../../../client/lib/shared';
@@ -43,13 +43,13 @@ class HoustonCustomActions extends Component {
   }
 }
 
-const HoustonCustomActionsWithData = createContainer((props) => {
+const HoustonCustomActionsWithData = withTracker((props) => {
   const { collection_info } = props;
   const actions = collection_info && collection_info.method_names || [];
 
   return {
     actions,
   };
-}, HoustonCustomActions);
+})(HoustonCustomActions);
 
 export default withRouter(HoustonCustomActionsWithData);

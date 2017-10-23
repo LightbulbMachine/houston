@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 import HoustonLink from '../partials/link';
 import Houston from '../../../client/lib/shared';
+import { validatePassword, validateLogin, validateEmail } from '../../util/validate';
 
 class houston_login extends Component {
   constructor(props) {
     super(props);
+    this.afterLogin = this.afterLogin.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleClaim = this.handleClaim.bind(this);
@@ -14,30 +16,45 @@ class houston_login extends Component {
     this.renderForm = this.renderForm.bind(this);
   }
 
+  afterLogin(error) {
+    const { history } = this.props;
+    // TODO error case that properly displays
+    if (error) {
+      return console.error(error);
+    } else {
+      history.push(Houston._ROOT_ROUTE);
+    }
+  };
+
   handleSubmit(e) {
     e.preventDefault();
     const { adminUserExists, history } = this.props;
     const email = this.email.value;
     const password = this.password.value;
 
-    const afterLogin = (error) => {
-      // TODO error case that properly displays
-      if (error) {
-        return console.error(error);
-      } else {
-        history.push(Houston._ROOT_ROUTE);
-      }
-    };
-
     if (adminUserExists) {
-      Meteor.loginWithPassword(email, password, afterLogin);
+      Meteor.loginWithPassword(email, password, this.afterLogin);
     } else {
-      Accounts.createUser({
-        email,
-        password
-      }, (error) => {
-        if (error) { return afterLogin(error); }
-        Houston.becomeAdmin(afterLogin);
+      const user = { password };
+
+      try {
+        validatePassword(password);
+        validateLogin(email);
+      }
+      catch (e) {
+        console.error('error', e);
+        return;
+      }
+
+      if (validateEmail('email', email)) {
+        user.email = email;
+      } else {
+        user.username = email;
+      }
+
+      Accounts.createUser(user, (error) => {
+        if (error) { return this.afterLogin(error); }
+        Houston.becomeAdmin(this.afterLogin);
       });
     }
   }
@@ -52,8 +69,7 @@ class houston_login extends Component {
 
   handleClaim(e) {
     e.preventDefault();
-    const { history } = this.props;
-    Houston.becomeAdmin(() => { history.push(Houston._ROOT_ROUTE) });
+    Houston.becomeAdmin(this.afterLogin);
   }
 
   renderHeading() {
@@ -150,13 +166,13 @@ class houston_login extends Component {
   }
 }
 
-const houston_login_with_data = createContainer((props) => {
+const houston_login_with_data = withTracker((props) => {
   return {
     loggedIn: Meteor.user(),
     adminUserExists: Houston._admin_user_exists(),
     currentUserIsAdmin: Houston._user_is_admin(Meteor.userId()),
   };
 
-}, houston_login);
+})(houston_login);
 
 export default withRouter(houston_login_with_data);
