@@ -80,7 +80,9 @@ const sync_collections = function() {
       try {
         instance = new Mongo.Collection(collection.s.name);
       } catch(e) {
-        console.log('Houston:', e);
+        // Hiding this error because it just means the collection already exists
+        // so we can't create it again (we wouldn't want to anyway)
+        // console.log('Houston:', e);
       }
     }
     if (instance) {
