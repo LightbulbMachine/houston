@@ -398,7 +398,8 @@ const houston_collection_view_with_data = withTracker(({ match, subs }) => {
   const filter_query = get_filter_query(collection);
   const sort_by = get_sort_by();
   const headers = get_collection_view_fields(collection_name, collection_info);
-  const nonid_headers = headers && headers.slice(1);
+  // TODO: Add possibility to toggle this off
+  const nonid_headers = headers/* && headers.slice(1)*/;
   
   const rows = () => {
     const documents = collection.find(filter_query, { sort: sort_by }).fetch();
