@@ -1,4 +1,4 @@
-_RELEASE_VERSION = "3.0.5";
+_RELEASE_VERSION = "3.1.0";
 
 Package.describe({
   name: "houston:admin",
