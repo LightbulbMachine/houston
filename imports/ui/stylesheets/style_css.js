@@ -83,19 +83,28 @@ export default class style_css extends Component {
         }
 
         .houston-form input {
-          border-radius: 8px;
+          border-radius: 0px;
         }
 
         .houston-form input:first-of-type {
           margin-bottom: -2px;
-          border-bottom-right-radius: 0;
-          border-bottom-left-radius: 0;
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
         }
 
         .houston-form input:last-of-type {
           margin-bottom: 20px;
-          border-top-left-radius: 0;
-          border-top-right-radius: 0;
+          border-bottom-right-radius: 8px;
+          border-bottom-left-radius: 8px;
+        }
+
+        .houston-form .role-box {
+          float: left;
+          margin-right: 20px;
+        }
+
+        .houston-form .role-box label {
+          font-weight: normal !important;
         }
 
         .fa:before {
