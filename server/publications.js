@@ -116,19 +116,6 @@ const sync_collections = function() {
   return mongo_driver.mongo.db.collections(bound_sync_collections);
 };
 
-Meteor.methods({
-  _houston_make_admin(user_id) {
-    check(user_id, String);
-    // limit one admin
-    if (Houston._admins.findOne({'user_id': {$exists: true}})) { return; }
-    Houston._admins.insert({ user_id }); // TODO: verify if this is still necesary since we are using Roles now
-    Houston._admins.insert({ exists: true });
-    Roles.addUsersToRoles(user_id, ['admin']);
-    sync_collections(); // reloads collections in case of new app
-    return true;
-  }
-});
-
 // publish our analysis of the app's collections
 Houston._publish('collections', function() {
   if (!Houston._user_is_admin(this.userId)) {
@@ -144,6 +131,10 @@ Houston._publish('admin_user', function() {
     return Houston._admins.find({exists: true});
   }
   return Houston._admins.find({});
+});
+
+Meteor.publish(null, function (){
+  return Meteor.roles.find({});
 });
 
 Meteor.startup(function() {
