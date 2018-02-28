@@ -38,6 +38,7 @@ BASE_HOUSTON_ROUTES = _.map([
   'home',
   'collection',
   'document',
+  'create_user',
   'change_password',
   'custom_template'
 ], name => Houston._houstonize_route(name));
@@ -62,9 +63,10 @@ class Routes extends Component {
   }
 
   houston_route(route_name, options) {
-    const { loggedIn, loggingIn, userIsAdmin, rolesReady } = this.props;
+    const { loggedIn, loggingIn, userIsAdmin, rolesReady, roles } = this.props;
     // Append _houston_ to template and route names to avoid clobbering parent route namespace
     options.history = this.props.history;
+    options.roles = roles;
     options.layoutTemplate = '_houston_master_layout';
     options.name = Houston._houstonize_route(route_name);
     options.componentName = Houston._houstonize_route(options.template);
@@ -127,6 +129,12 @@ class Routes extends Component {
               })
             }
             {
+              this.houston_route('create_user', {
+                houston_path: '/create-user',
+                template: 'create_user'
+              })
+            }
+            {
               this.houston_route('custom_template', {
                 houston_path: '/actions/:template',
                 template: 'custom_template_view',
@@ -165,6 +173,7 @@ const AdminRoutes = withTracker((props) => {
     loggedIn: Meteor.user(),
     loggingIn: Meteor.loggingIn(),
     rolesReady: Houston._subscribe('roles').ready(),
+    roles: Meteor.roles.find({}).fetch(),
     userIsAdmin: Houston._user_is_admin(Meteor.userId()),
   };
 

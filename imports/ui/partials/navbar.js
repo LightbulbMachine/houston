@@ -10,6 +10,7 @@ class houston_navbar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.isActive = this.isActive.bind(this);
     this.renderIfAdmin = this.renderIfAdmin.bind(this);
+    this.renderCreateUserLink = this.renderCreateUserLink.bind(this);
     this.renderPasswordLink = this.renderPasswordLink.bind(this);
     this.renderLogoutLink = this.renderLogoutLink.bind(this);
   }
@@ -46,6 +47,15 @@ class houston_navbar extends Component {
       menu_items.map(item => <li className={this.isActive(item.path)} key={item.title}>
         <HoustonLink target={item.target} href={item.path} history={history}>{item.title}</HoustonLink>
       </li>);
+  }
+
+  renderCreateUserLink() {
+    const { currentUserIsAdmin, history } = this.props;
+    return currentUserIsAdmin &&
+      <li>
+        <HoustonLink href={`${Houston._ROOT_ROUTE}/create-user`} history={history}><i
+            className="fa fa-user-plus"></i>Create user</HoustonLink>
+      </li>;
   }
 
   renderPasswordLink() {
@@ -95,6 +105,7 @@ class houston_navbar extends Component {
                   <i className="fa fa-bug"></i>Report a Bug
                 </a>
               </li>
+              {this.renderCreateUserLink()}
               {this.renderPasswordLink()}
               {this.renderLogoutLink()}
             </ul>
