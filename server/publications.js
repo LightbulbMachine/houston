@@ -68,7 +68,6 @@ Houston._setup_collection = function(collection) {
 };
 
 const sync_collections = function() {
-  // Houston._admins.findOne(); // TODO Why is this here?
   const collections = {};
   // This does not get all collections:
   // const mongoCollections = Mongo.Collection.getAll() || [];
@@ -125,21 +124,6 @@ Houston._publish('collections', function() {
   return Houston._collections.collections.find();
 });
 
-// TODO address inherent security issue
-Houston._publish('admin_user', function() {
-  if (!Houston._user_is_admin(this.userId)) {
-    return Houston._admins.find({exists: true});
-  }
-  return Houston._admins.find({});
-});
-
 Meteor.publish(null, function (){
   return Meteor.roles.find({});
-});
-
-Meteor.startup(function() {
-  sync_collections();
-  if ((Houston._admins.find().count() > 0) && !Houston._admins.findOne({exists: true})) {
-    return Houston._admins.insert({exists: true});
-  }
 });
