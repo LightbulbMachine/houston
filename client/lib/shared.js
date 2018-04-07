@@ -1,25 +1,11 @@
 import { Session } from 'meteor/session';
 import Houston from '../../imports/houston';
 
-Houston._admin_user_exists = () => Houston._admins.find().count() > 0;
-
-Houston.becomeAdmin = (cb) =>
-  Houston._call('make_admin', Meteor.userId(), () => {
-    Houston._subscribe_to_collections(); // resubscribe so you get them
-    cb();
-    // Houston._go('home');
-    // location.reload();
-  })
-;
-
 Houston._subscribe_to_collections = function() {
   if (Houston._collections_sub != null) { Houston._collections_sub.stop(); }
   Houston._collections_sub = Houston._subscribe('collections');
 };
 
-// Handlebars.registerHelper('currentUserIsAdmin', () => Houston._user_is_admin(Meteor.userId()));
-
-// Handlebars.registerHelper('adminUserExists', Houston._admin_user_exists);
 
 if (Houston._collections == null) { Houston._collections = {}; }
 
