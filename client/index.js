@@ -73,7 +73,6 @@ class Routes extends Component {
     options.template = Houston._houstonize(options.template);
     options.waitOn = function() {
       const subscriptions = options.subs ? options.subs(this.params) : [];
-      subscriptions.push(Houston._subscribe('admin_user'));
       return subscriptions;
     };
 

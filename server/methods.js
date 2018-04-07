@@ -52,16 +52,6 @@ Houston._setup_collection_methods = function(collection) {
 };
 
 Meteor.methods({
-  _houston_make_admin(user_id) {
-    check(user_id, String);
-    // limit one admin
-    if (Houston._admins.findOne({'user_id': {$exists: true}})) { return; }
-    Houston._admins.insert({ user_id }); // TODO: verify if this is still necesary since we are using Roles now
-    Houston._admins.insert({ exists: true });
-    Roles.addUsersToRoles(user_id, ['admin']);
-    sync_collections(); // reloads collections in case of new app
-    return true;
-  },
   _houston_create_user({ username, email, password, roles }) {
     check(username, String);
     check(email, String);
