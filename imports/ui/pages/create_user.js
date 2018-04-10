@@ -7,15 +7,17 @@ class houston_create_user extends Component {
     super(props);
 
     this.state = {
-      roles: []
+      roles: [],
+      customRole: '',
     };
 
     this.handleSelectRole = this.handleSelectRole.bind(this);
+    this.handleInputCustomRole = this.handleInputCustomRole.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSelectRole(event) {
-    const target = event.target;
+  handleSelectRole(e) {
+    const target = e.target;
     const role = target.value;
     let roles = this.state.roles;
 
@@ -30,6 +32,12 @@ class houston_create_user extends Component {
     this.setState({
       roles
     });
+  }
+
+  handleInputCustomRole(e) {
+    const target = e.target;
+    const customRole = target.value;
+    this.setState({ customRole });
   }
 
   handleSubmit(e) {
@@ -82,6 +90,20 @@ class houston_create_user extends Component {
               </div>
             )
           }
+          <div className="role-box">
+            <label>
+              <input
+                name="roles"
+                type="checkbox"
+                value={this.state.customRole}
+                onChange={this.handleSelectRole} /> &nbsp;
+              <input 
+                name="custom-role"
+                type="text"
+                placeholder="new custom role ..."
+                onChange={this.handleInputCustomRole}/>
+            </label>
+          </div>
 
           <div>
             <button className="btn btn-lg btn-primary btn-block" type="submit"><i
