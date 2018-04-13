@@ -38,7 +38,7 @@ BASE_HOUSTON_ROUTES = _.map([
   'home',
   'collection',
   'document',
-  'create_user',
+  'users',
   'change_password',
   'custom_template'
 ], name => Houston._houstonize_route(name));
@@ -128,9 +128,9 @@ class Routes extends Component {
               })
             }
             {
-              this.houston_route('create_user', {
-                houston_path: '/create-user',
-                template: 'create_user'
+              this.houston_route('users', {
+                houston_path: '/users',
+                template: 'users'
               })
             }
             {

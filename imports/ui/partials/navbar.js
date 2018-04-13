@@ -53,8 +53,8 @@ class houston_navbar extends Component {
     const { currentUserIsAdmin, history } = this.props;
     return currentUserIsAdmin &&
       <li>
-        <HoustonLink href={`${Houston._ROOT_ROUTE}/create-user`} history={history}><i
-            className="fa fa-user-plus"></i>Create user</HoustonLink>
+        <HoustonLink href={`${Houston._ROOT_ROUTE}/users`} history={history}><i
+            className="fa fa-users"></i>Users</HoustonLink>
       </li>;
   }
 
