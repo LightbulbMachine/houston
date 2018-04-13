@@ -98,13 +98,29 @@ export default class style_css extends Component {
           border-bottom-left-radius: 8px;
         }
 
+        .houston-form .custom-role-input {
+          border: 1px solid;
+          border-radius: 0 !important;
+          padding: 1px !important;
+          height: 2em !important;
+          width: 90%;
+        }
+
         .houston-form .role-box {
           float: left;
           margin-right: 20px;
         }
 
+        .houston-form .role-box-custom {
+          width: 100%;
+        }
+
         .houston-form .role-box label {
           font-weight: normal !important;
+        }
+
+        .houston-form .role-box-custom label {
+          width: 100%;
         }
 
         .fa:before {

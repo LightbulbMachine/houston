@@ -67,5 +67,45 @@ Meteor.methods({
     Roles.addUsersToRoles(userId, roles);
 
     return userId;
-  }
+  },
+
+  _houston_edit_user(userId, { username, email, password, roles }) {
+    check(userId, String);
+    check(username, String);
+    check(email, String);
+    check(password, Match.Optional(String));
+    check(roles, Match.Optional(Array));
+
+    if (! Houston._user_is_admin(this.userId)) {
+      throw new Meteor.Error('You need to be an admin to edit users!');
+    }
+
+    if (! userId) {
+      throw new Meteor.Error('User not selected');
+    }
+
+    if (Meteor.users.findOne({ 'emails.address': email, _id: { $ne: userId } })) {
+      throw new Meteor.Error('Email already exists');
+    }
+
+    if (Meteor.users.findOne({ 'username': username, _id: { $ne: userId } })) {
+      throw new Meteor.Error('Username already exists');
+    }
+
+    // Update account
+    Meteor.users.update(userId, {
+      $set: {
+        username,
+        roles,
+        'emails.0.address': email
+      }
+    });
+
+    // Update password
+    if (password.length) {
+      Accounts.setPassword(userId, password);
+    }
+
+    return userId;
+  },
 });

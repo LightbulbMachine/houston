@@ -62,7 +62,7 @@ const houston_sidenav_with_data = withTracker(({ waitOn, data }) => {
   const { collections } = Houston._collections;
 
   let loading = true;
-  let stillLoading = true;
+  let stillLoading = subs.length ? true : false;
 
   _.each(subs, function(sub, key, list){
     if (sub.ready()) {
